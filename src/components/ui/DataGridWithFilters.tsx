@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
 import { DataGrid, type GridColDef, type GridValidRowModel } from '@mui/x-data-grid';
-import { Box, TextField, MenuItem, Select } from '@mui/material';
+import { Box, TextField, MenuItem, Select, useMediaQuery } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from '@mui/material/styles';
 import type { SxProps, Theme } from '@mui/material/styles';
+import { Icons } from './icons';
 
 interface DataGridWithFiltersProps<T extends GridValidRowModel> {
   columns: GridColDef<T>[];
@@ -37,6 +38,10 @@ export function DataGridWithFilters<T extends GridValidRowModel>(props: DataGrid
   } = props;
 
   const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.only('xs'));
+  const isSm = useMediaQuery(theme.breakpoints.only('sm'));
+
+  const searchIconSize = isXs ? 14 : 20
 
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<Record<string, string>>(() => {
@@ -88,20 +93,20 @@ export function DataGridWithFilters<T extends GridValidRowModel>(props: DataGrid
     '& .MuiDataGrid-columnHeader': {
       bgcolor: theme.palette.background.paper,
       fontWeight: 500,
-      fontSize: 12,
+      fontSize: isXs ? 10 : isSm ? 11 : 12,
       color: theme.palette.text.secondary,
       textTransform: 'uppercase',
-      px: '24px',
+      px: isXs ? '8px' : isSm ? '16px' : '24px',
       borderBottom: `1px solid ${theme.palette.custom.borderHeader} !important`,
     },
     '& .MuiDataGrid-row': {
-      fontSize: 14,
+      fontSize: isXs ? 12 : isSm ? 13 : 14,
       color: theme.palette.secondary.main,
     },
     '& .MuiDataGrid-cell': {
       borderBottom: `1px solid ${theme.palette.custom.borderHeader}`,
       borderTop: '0px solid',
-      px: '24px',
+      px: isXs ? '8px' : isSm ? '16px' : '24px',
       color: theme.palette.secondary.main,
     },
     '& .MuiDataGrid-footerContainer': {
@@ -121,8 +126,8 @@ export function DataGridWithFilters<T extends GridValidRowModel>(props: DataGrid
           alignItems: 'center',
           justifyContent: 'space-between',
           width: '100%',
-          gap: '10px',
-          mb: "20px",
+          gap: { xs: '6px', sm: '8px', md: '10px' },
+          mb: { xs: '10px', sm: '16px', md: '20px' },
           overflowX: 'auto',
           pb: 0,
           '::-webkit-scrollbar': { height: 0 },
@@ -130,7 +135,7 @@ export function DataGridWithFilters<T extends GridValidRowModel>(props: DataGrid
           boxShadow: 'none',
         }}
       >
-        <Box display="flex" alignItems="center" gap={"10px"}>
+        <Box display="flex" alignItems="center" gap={{ xs: '6px', sm: '8px', md: '10px' }}>
           <Box
             sx={{
               display: 'flex',
@@ -138,10 +143,10 @@ export function DataGridWithFilters<T extends GridValidRowModel>(props: DataGrid
               bgcolor: theme.palette.background.paper,
               borderRadius: '11px',
               boxShadow: '0px 2.222px 3.333px 0px rgba(0,0,0,0.05)',
-              px: '16.67px',
-              minWidth: 250,
+              px: { xs: '8px', sm: '12px', md: '16.67px' },
+              minWidth: { xs: 120, sm: 180, md: 250 },
               fontWeight: 500,
-              fontSize: 18,
+              fontSize: isXs ? 14 : isSm ? 16 : 18,
               color: '#0A1857',
               position: 'relative',
             }}
@@ -155,23 +160,23 @@ export function DataGridWithFilters<T extends GridValidRowModel>(props: DataGrid
               slotProps={{
                 input: {
                   disableUnderline: true,
-                  endAdornment: <SearchIcon sx={theme => ({ color: theme.palette.text.secondary, fontSize: 20 })} />,
+                  endAdornment: <SearchIcon sx={theme => ({ color: theme.palette.text.secondary, fontSize: searchIconSize })} />, // icon size is fine
                 },
               }}
               sx={{
                 bgcolor: 'transparent',
                 borderRadius: 0,
                 fontWeight: 500,
-                fontSize: 18,
+                fontSize: isXs ? 14 : isSm ? 16 : 18,
                 color: '#0A1857',
                 width: '100%',
                 '& .MuiInputBase-input': {
                   p: 0,
                   fontWeight: 500,
-                  fontSize: 18,
+                  fontSize: isXs ? 14 : isSm ? 16 : 18,
                   color: '#0A1857',
                   textAlign: 'left',
-                  height: '40px',
+                  height: isXs ? '32px' : isSm ? '36px' : '40px',
                 },
                 '& .MuiInputBase-root': {
                   pr: 0,
@@ -183,7 +188,7 @@ export function DataGridWithFilters<T extends GridValidRowModel>(props: DataGrid
                   color: theme.palette.secondary.main,
                   opacity: 1,
                   fontWeight: 400,
-                  fontSize: 14,
+                  fontSize: isXs ? 12 : isSm ? 13 : 14,
                 },
               }}
             />
@@ -194,9 +199,9 @@ export function DataGridWithFilters<T extends GridValidRowModel>(props: DataGrid
               sx={{
                 borderRadius: '11px',
                 boxShadow: '0px 2.222px 3.333px 0px rgba(0,0,0,0.05)',
-                px: '15px',
+                px: { xs: '8px', sm: '10px', md: '15px' },
                 fontWeight: 500,
-                fontSize: 15,
+                fontSize: isXs ? 12 : isSm ? 14 : 15,
                 color: theme.palette.secondary.main,
                 display: 'flex',
                 alignItems: 'center',
@@ -210,29 +215,30 @@ export function DataGridWithFilters<T extends GridValidRowModel>(props: DataGrid
                 size="small"
                 variant="standard"
                 disableUnderline
+                IconComponent={Icons.chevronDown}
                 sx={{
                   bgcolor: 'transparent',
                   borderRadius: 0,
                   color: theme.palette.secondary.main,
                   width: '100%',
-                  height: '40px',
+                  height: isXs ? '32px' : isSm ? '36px' : '40px',
                   '& .MuiSelect-select': {
                     p: 0,
                     fontWeight: 400,
-                    fontSize: 13,
+                    fontSize: isXs ? 11 : isSm ? 12 : 13,
                     color: theme.palette.secondary.main,
                   },
                   '& .MuiSelect-icon': {
                     color: theme.palette.text.disabled,
-                    fontSize: 16,
+                    fontSize: isXs ? 14 : 16,
                   },
                 }}
               >
-                <MenuItem value="" sx={{ color: theme.palette.secondary.main, fontWeight: 500, fontSize: 15 }}>
+                <MenuItem value="" sx={{ color: theme.palette.secondary.main, fontWeight: 500, fontSize: isXs ? 12 : isSm ? 14 : 15 }}>
                   {key.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase())}
                 </MenuItem>
                 {filterOptions[key].map((opt) => (
-                  <MenuItem key={opt} value={opt} sx={{ color: theme.palette.secondary.main, fontWeight: 500, fontSize: 15 }}>
+                  <MenuItem key={opt} value={opt} sx={{ color: theme.palette.secondary.main, fontWeight: 500, fontSize: isXs ? 12 : isSm ? 14 : 15 }}>
                     {opt}
                   </MenuItem>
                 ))}

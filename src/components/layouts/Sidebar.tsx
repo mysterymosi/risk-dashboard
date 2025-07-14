@@ -5,7 +5,7 @@ import { Box, List, ListItem, ListItemButton, ListItemIcon, Avatar, Paper, Divid
 import { menuItems } from "@/constants"
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import ViewSidebarIcon from '@mui/icons-material/ViewSidebar';
+import { Icons } from "@/components/ui";
 
 const SidebarContent: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   const theme = useTheme();
@@ -119,26 +119,22 @@ const Sidebar: React.FC = () => {
   // Sidebar for mobile
   return (
     <>
-      {/* Trigger button, only visible on mobile and when Drawer is closed */}
-      {!open && (
-        <IconButton
-          color="primary"
-          aria-label="open sidebar"
-          onClick={() => setOpen(true)}
-          sx={{
-            position: 'fixed',
-            top: 16,
-            right: 16,
-            zIndex: 1300,
-            bgcolor: 'background.paper',
-            boxShadow: 1,
-            borderRadius: 2,
-            display: { xs: 'flex', sm: 'none' },
-          }}
-        >
-          <ViewSidebarIcon fontSize="large" />
-        </IconButton>
-      )}
+      {/* Trigger button, always visible on mobile, toggles open/close */}
+      <IconButton
+        color="primary"
+        aria-label={open ? "close sidebar" : "open sidebar"}
+        onClick={() => setOpen((prev) => !prev)}
+        sx={{
+          position: 'fixed',
+          top: 16,
+          right: 16,
+          zIndex: 1300,
+          bgcolor: 'background.paper',
+          display: { xs: 'flex', sm: 'none' },
+        }}
+      >
+        {open ? <Icons.panelLeftClose /> : <Icons.panelLeftOpen />}
+      </IconButton>
       <Drawer
         anchor="left"
         open={open}
