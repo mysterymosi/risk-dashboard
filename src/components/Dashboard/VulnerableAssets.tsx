@@ -1,30 +1,40 @@
 import React from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableRow, TableHead, Chip, Stack, TableContainer } from '@mui/material';
+import { Box, Typography, Table, TableBody, TableCell, TableRow, TableHead, Chip, Stack, TableContainer, useMediaQuery } from '@mui/material';
 import { topAssets } from '@/constants';
 import { useTheme } from '@mui/material/styles';
 
 const VulnerableAssets: React.FC = () => {
   const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.only('xs'));
+  const isSm = useMediaQuery(theme.breakpoints.only('sm'));
+
+  // Responsive chip and cell sizes
   const chipStyle = {
     fontWeight: 600,
-    fontSize: 14,
-    height: 28,
+    fontSize: isXs ? 12 : isSm ? 13 : 14,
+    height: isXs ? 22 : isSm ? 25 : 28,
     borderRadius: 1.5,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     mr: 0.5,
+    // minWidth: 0,
   };
+  const cellFontSize = isXs ? 12 : isSm ? 13 : 14;
+  const cellHeight = isXs ? 36 : isSm ? 44 : 53;
+  const headerFontSize = isXs ? 11 : isSm ? 12 : 12;
+  const headerPaddingY = isXs ? '8px' : isSm ? '10px' : '12px';
+
   return (
-    <Box display="flex" flexDirection={"column"} gap={"22px"}>
+    <Box display="flex" flexDirection="column" gap={{ xs: '12px', sm: '18px', md: '22px' }}>
       {/* make this header text a component */}
-      <Typography fontWeight={700} color={theme.palette.secondary.main} fontSize={15}>
+      <Typography fontWeight={700} color={theme.palette.secondary.main} fontSize={{ xs: 13, sm: 14, md: 15 }}>
         Top Vulnerable Assets
       </Typography>
-      <Box sx={{ maxHeight: 221, overflowY: 'auto', pr: 1, borderRadius: 2, border: 0 }}>
+      <Box sx={{ maxHeight: { xs: 160, sm: 180, md: 221 }, overflowY: 'auto', pr: 1, borderRadius: 2, border: 0 }}>
         <TableContainer
           sx={{
-            maxHeight: 221,
+            maxHeight: { xs: 160, sm: 180, md: 221 },
             '&::-webkit-scrollbar': {
               width: "1px",
               height: "1px",
@@ -37,13 +47,13 @@ const VulnerableAssets: React.FC = () => {
             },
           }}
         >
-          <Table size="small" sx={{ pr: "14px", minWidth: 320, tableLayout: 'fixed' }} stickyHeader>
+          <Table size="small" sx={{ pr: { xs: '6px', sm: '10px', md: '14px' }, minWidth: 0, tableLayout: 'fixed' }} stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ py: "12px", px: 0, color: theme.palette.text.secondary, fontWeight: 500, fontSize: 12, background: theme.palette.background.paper }}>
+                <TableCell sx={{ py: headerPaddingY, px: 0, color: theme.palette.text.secondary, fontWeight: 500, fontSize: headerFontSize, background: theme.palette.background.paper }}>
                   ASSET NAME
                 </TableCell>
-                <TableCell sx={{ py: "12px", color: theme.palette.text.secondary, fontWeight: 500, fontSize: 12, background: theme.palette.background.paper }}>
+                <TableCell sx={{ py: headerPaddingY, color: theme.palette.text.secondary, fontWeight: 500, fontSize: headerFontSize, background: theme.palette.background.paper }}>
                   SEVERITY
                 </TableCell>
               </TableRow>
@@ -51,9 +61,9 @@ const VulnerableAssets: React.FC = () => {
             <TableBody>
               {topAssets.map((asset, idx) => (
                 <TableRow key={idx} sx={{ borderBottom: idx !== topAssets.length - 1 ? `1px solid ${theme.palette.custom.chipGray}` : 'none' }}>
-                  <TableCell sx={{ height: 53, color: theme.palette.secondary.main, px: 0, fontWeight: 400, fontSize: 14, background: theme.palette.background.paper }}>{asset.name}</TableCell>
-                  <TableCell sx={{ height: 53, background: theme.palette.background.paper }}>
-                    <Stack direction="row" spacing={"10px"}>
+                  <TableCell sx={{ height: cellHeight, color: theme.palette.secondary.main, px: 0, fontWeight: 400, fontSize: cellFontSize, background: theme.palette.background.paper }}>{asset.name}</TableCell>
+                  <TableCell sx={{ height: cellHeight, background: theme.palette.background.paper }}>
+                    <Stack direction="row" spacing={{ xs: '6px', sm: '8px', md: '10px' }}>
                       {asset.severity.critical > 0 && (
                         <Chip label={<><span style={{ color: theme.palette.custom.textCritical, fontWeight: 500 }}>C</span> <span style={{ color: theme.palette.custom.textNumber, fontWeight: 700 }}>{asset.severity.critical}</span></>} sx={{ ...chipStyle, bgcolor: theme.palette.custom.chipCritical }} size="small" />
                       )}
