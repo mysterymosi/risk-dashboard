@@ -15,6 +15,10 @@ export default function FindingsTable() {
       rows={findings}
       filterOptions={filterOptions}
       searchPlaceholder="Search"
+      getFilterValue={(row, key) => {
+        if (key === 'asset') return row.asset.name;
+        return row[key as keyof typeof row] as string;
+      }}
       getSearchText={(row) => [row.finding, row.asset?.name ?? '', row.software]}
     >
       <Box
